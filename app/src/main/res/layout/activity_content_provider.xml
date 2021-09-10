@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ContentProviderActivity">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="40dp">
+    <Button
+        android:id="@+id/btnWriteSms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/write_sms"/>
+    <Button
+        android:id="@+id/btnReadSms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/read_sms"/>
+    <Button
+        android:id="@+id/btnWriteContacts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/write_contacts"/>
+    <Button
+        android:id="@+id/btnReadContacts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/read_contacts"/>
+
+</LinearLayout>
+</android.support.constraint.ConstraintLayout>

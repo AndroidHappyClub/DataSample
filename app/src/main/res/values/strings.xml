@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">DataSample</string>
+    <string name="account">帐号</string>
+    <string name="Button_Add">添加</string>
+    <string name="read_sms">读取短信</string>
+    <string name="write_sms">插入短信</string>
+    <string name="read_contacts">读取联系人</string>
+    <string name="write_contacts">添加联系人</string>
+    <string name="Button_Search">查询</string>
+</resources>

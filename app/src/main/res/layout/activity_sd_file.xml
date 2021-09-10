@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SdFileActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="请输入文件名：" />
+        <EditText
+            android:id="@+id/etSdFileName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NewTextFile.txt"
+            android:hint="文件名" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="请输入文件内容：" />
+        <EditText
+            android:id="@+id/etSdContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="请输入文件内容"
+            android:hint="文件内容" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btnSdClean"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="清空界面" />
+            <Button
+                android:id="@+id/btnSdSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="保存到SD卡" />
+            <Button
+                android:id="@+id/btnSdRead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="读取SD卡文件" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
