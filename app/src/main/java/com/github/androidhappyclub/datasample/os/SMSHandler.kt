@@ -22,23 +22,33 @@
  * SOFTWARE.
  */
 
-package com.github.androidhappyclub.datasample
+package com.github.androidhappyclub.datasample.os
 
-import android.app.Application
-import com.ave.vastgui.tools.config.ToolsConfig
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
+import com.ave.vastgui.core.extension.SingletonHolder
+import com.github.androidhappyclub.datasample.ContentProviderActivity
+import java.lang.ref.WeakReference
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
-// Date: 2023/12/12
-// Description: 
-// Documentation:
-// Reference:
+// Date: 2024/2/7
+// Description: 用来监听短信
+// Documentation: https://www.yuque.com/mashangxiayu/gne1e3/tgxsm100xngx3tg6#m8sQ0
 
-class App : Application() {
+class SMSHandler private constructor(mActivity: ContentProviderActivity) :
+    Handler(Looper.getMainLooper()) {
 
-    override fun onCreate() {
-        super.onCreate()
-        ToolsConfig.init(this)
+    private val mWr: WeakReference<ContentProviderActivity> = WeakReference(mActivity)
+
+    override fun handleMessage(msg: Message) {
+        when (msg.what) {
+            ContentProviderActivity.NEW_MESSAGE -> {
+                mWr.get()?.mLogger?.d(msg.obj.toString())
+            }
+        }
     }
 
+    companion object : SingletonHolder<SMSHandler, ContentProviderActivity>(::SMSHandler)
 }

@@ -28,10 +28,13 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Telephony
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.provider.ContactsContract
-import android.provider.ContactsContract.RawContacts
 import android.provider.ContactsContract.CommonDataKinds.Phone
+import android.provider.ContactsContract.RawContacts
+import android.provider.Telephony
 import android.widget.Toast
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
@@ -39,6 +42,7 @@ import androidx.core.database.getIntOrNull
 import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ave.vastgui.core.extension.SingletonHolder
 import com.ave.vastgui.tools.utils.IntentUtils
 import com.ave.vastgui.tools.utils.permission.requestPermission
 import com.ave.vastgui.tools.viewbinding.viewBinding
@@ -48,57 +52,62 @@ import com.github.androidhappyclub.datasample.adapter.model.Contact
 import com.github.androidhappyclub.datasample.adapter.model.Sms
 import com.github.androidhappyclub.datasample.databinding.ActivityContentProviderBinding
 import com.github.androidhappyclub.datasample.log.mLogFactory
+import com.github.androidhappyclub.datasample.observer.SMSObserver
+import com.github.androidhappyclub.datasample.os.SMSHandler
 import com.github.androidhappyclub.datasample.provider.ContactEmail
 import com.github.androidhappyclub.datasample.provider.ContactName
 import com.github.androidhappyclub.datasample.provider.ContactPhone
 import com.github.androidhappyclub.datasample.provider.buildContactsScope
+import java.lang.ref.WeakReference
 
 class ContentProviderActivity : AppCompatActivity(R.layout.activity_content_provider) {
 
-    private val binding by viewBinding(ActivityContentProviderBinding::bind)
-    private val accountHelper = AccountHelper(this)
-    private val cpAdapter = ContentProviderAdapter(this)
-    private val logger = mLogFactory.getLog(ContentProviderActivity::class.java)
+    private val mBinding by viewBinding(ActivityContentProviderBinding::bind)
+    private val mAccountHelper = AccountHelper(this)
+    private val mCpAdapter = ContentProviderAdapter(this)
+    private val mHandler by lazy { SMSHandler.getInstance(this) }
+    private val mObserver by lazy { SMSObserver(mHandler, this) }
+    val mLogger = mLogFactory.getLog(ContentProviderActivity::class.java)
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding.contents.layoutManager = LinearLayoutManager(this)
+        mBinding.contents.layoutManager = LinearLayoutManager(this)
         // 获取的是哪些列的信息
-        binding.contents.adapter = cpAdapter
-        binding.getAccounts.setOnClickListener {
-            accountHelper.getAccounts {
-                if (binding.contents.childCount > 0) {
-                    binding.contents.removeAllViews()
-                    cpAdapter.clear()
+        mBinding.contents.adapter = mCpAdapter
+        mBinding.getAccounts.setOnClickListener {
+            mAccountHelper.getAccounts {
+                if (mBinding.contents.childCount > 0) {
+                    mBinding.contents.removeAllViews()
+                    mCpAdapter.clear()
                 }
                 it.forEach { account ->
-                    cpAdapter.addAccount(account)
+                    mCpAdapter.addAccount(account)
                 }
             }
         }
-        binding.btnWriteSms.setOnClickListener {
+        mBinding.btnWriteSms.setOnClickListener {
             IntentUtils.sendMmsMessage(
                 this,
                 "这是一条测试短信",
                 "123456789"
             )
         }
-        binding.btnReadSms.setOnClickListener {
+        mBinding.btnReadSms.setOnClickListener {
             requestPermission(Manifest.permission.READ_SMS) {
                 granted = {
                     readSms()
                 }
             }
         }
-        binding.btnWriteContacts.setOnClickListener {
+        mBinding.btnWriteContacts.setOnClickListener {
             requestPermission(Manifest.permission.WRITE_CONTACTS) {
                 granted = {
                     writeContacts()
                 }
             }
         }
-        binding.btnReadContacts.setOnClickListener {
+        mBinding.btnReadContacts.setOnClickListener {
             requestPermission(Manifest.permission.READ_CONTACTS) {
                 granted = {
                     readContacts()
@@ -107,12 +116,23 @@ class ContentProviderActivity : AppCompatActivity(R.layout.activity_content_prov
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        contentResolver
+            .registerContentObserver(Telephony.Sms.CONTENT_URI, true, mObserver)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        contentResolver.unregisterContentObserver(mObserver)
+    }
+
     // 读取短信
     @RequiresPermission(value = Manifest.permission.READ_SMS)
     private fun readSms() {
-        if (binding.contents.childCount > 0) {
-            binding.contents.removeAllViews()
-            cpAdapter.clear()
+        if (mBinding.contents.childCount > 0) {
+            mBinding.contents.removeAllViews()
+            mCpAdapter.clear()
         }
         val cursor =
             contentResolver.query(Telephony.Sms.CONTENT_URI, null, null, null, null) ?: return
@@ -123,8 +143,7 @@ class ContentProviderActivity : AppCompatActivity(R.layout.activity_content_prov
                 val type = getIntOrNull(getColumnIndex(Telephony.Sms.TYPE))
                 val body = getStringOrNull(getColumnIndex(Telephony.Sms.BODY))
                 val name = getNameFromAddress(address)
-                logger.d("$address 对应的名字为 $name")
-                cpAdapter.addSms(Sms(name, address, date, type, body))
+                mCpAdapter.addSms(Sms(name, address, date, type, body))
             }
         }
         cursor.close()
@@ -133,9 +152,9 @@ class ContentProviderActivity : AppCompatActivity(R.layout.activity_content_prov
     // 读取手机联系人
     @RequiresPermission(value = Manifest.permission.READ_CONTACTS)
     private fun readContacts() {
-        if (binding.contents.childCount > 0) {
-            binding.contents.removeAllViews()
-            cpAdapter.clear()
+        if (mBinding.contents.childCount > 0) {
+            mBinding.contents.removeAllViews()
+            mCpAdapter.clear()
         }
         // 查询raw_contacts表获得联系人的id
         // 查询联系人数据
@@ -145,7 +164,7 @@ class ContentProviderActivity : AppCompatActivity(R.layout.activity_content_prov
                 //获取联系人姓名,手机号码
                 val name = getStringOrNull(getColumnIndex(Phone.DISPLAY_NAME))
                 val number = getStringOrNull(getColumnIndex(Phone.NUMBER))
-                cpAdapter.addContact(Contact(name, number))
+                mCpAdapter.addContact(Contact(name, number))
             }
         }
         cursor.close()
@@ -170,7 +189,7 @@ class ContentProviderActivity : AppCompatActivity(R.layout.activity_content_prov
                 val name = getStringOrNull(getColumnIndex(Phone.DISPLAY_NAME))
                 val accountName = getStringOrNull(getColumnIndex(RawContacts.ACCOUNT_NAME))
                 val accountType = getStringOrNull(getColumnIndex(RawContacts.ACCOUNT_TYPE))
-                binding.content.text = "$number 对应的联系人名称：$name $accountName $accountType"
+                mBinding.content.text = "$number 对应的联系人名称：$name $accountName $accountType"
             }
         }
         cursor.close()
@@ -208,5 +227,12 @@ class ContentProviderActivity : AppCompatActivity(R.layout.activity_content_prov
         }
         cursor.close()
         return name
+    }
+
+    companion object {
+        /**
+         * 收到新短信
+         */
+        const val NEW_MESSAGE = 0x01
     }
 }
