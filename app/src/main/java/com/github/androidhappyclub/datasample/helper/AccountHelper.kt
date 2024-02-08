@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.androidhappyclub.datasample.accounts
+package com.github.androidhappyclub.datasample.helper
 
 import android.Manifest
 import android.accounts.Account

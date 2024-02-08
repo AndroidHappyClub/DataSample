@@ -28,7 +28,7 @@
 
         <variable
             name="item"
-            type="com.github.androidhappyclub.datasample.adapter.model.Sms" />
+            type="com.github.androidhappyclub.datasample.model.Sms" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"

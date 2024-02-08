@@ -32,9 +32,10 @@ import com.ave.vastgui.adapter.VastBindAdapter
 import com.ave.vastgui.tools.view.avatar.Avatar
 import com.ave.vastgui.tools.view.extension.refreshWithInvalidate
 import com.github.androidhappyclub.datasample.BR
-import com.github.androidhappyclub.datasample.adapter.model.Contact
-import com.github.androidhappyclub.datasample.adapter.model.Sms
+import com.github.androidhappyclub.datasample.model.Contact
+import com.github.androidhappyclub.datasample.model.Sms
 import com.github.androidhappyclub.datasample.log.mLogFactory
+import com.github.androidhappyclub.datasample.model.Student
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
@@ -63,7 +64,7 @@ class ContentProviderAdapter(context: Context) :
     /**
      * 添加设备账户信息
      */
-    fun addAccount(account: Account){
+    fun addAccount(account: Account) {
         val index = itemCount
         mDataSource.add(AccountWrapper(account))
         notifyItemChanged(index)
@@ -81,9 +82,18 @@ class ContentProviderAdapter(context: Context) :
     /**
      * 添加联系人对象
      */
-    fun addContact(contact: Contact){
+    fun addContact(contact: Contact) {
         val index = itemCount
         mDataSource.add(ContactWrapper(contact))
+        notifyItemChanged(index)
+    }
+
+    /**
+     * 添加学生对象
+     */
+    fun addStudent(stu: Student) {
+        val index = itemCount
+        mDataSource.add(StuWrapper(stu))
         notifyItemChanged(index)
     }
 

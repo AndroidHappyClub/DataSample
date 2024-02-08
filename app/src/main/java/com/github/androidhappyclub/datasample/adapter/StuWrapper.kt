@@ -22,33 +22,15 @@
  * SOFTWARE.
  */
 
-package com.github.androidhappyclub.datasample.adapter.model
+package com.github.androidhappyclub.datasample.adapter
 
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.ave.vastgui.adapter.widget.AdapterItemWrapper
+import com.github.androidhappyclub.datasample.R
+import com.github.androidhappyclub.datasample.model.Student
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
-// Date: 2023/12/16
+// Date: 2024/2/8
 
-/**
- * 获取到的短信对象。
- *
- * @property address 短信发送者。
- * @property date 短信接收日期。
- * @property type 短信类型。
- * @property body 短信内容。
- */
-data class Sms(
-    val name: String?,
-    val address: String?,
-    private val date: Long?,
-    private val type: Int?,
-    val body: String?
-) {
-    fun date(): String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        .format(Date(date ?: System.currentTimeMillis()))
-
-    private fun type(): String = type.toString()
-}
+class StuWrapper(student: Student) :
+    AdapterItemWrapper<Student>(student, null, R.layout.item_student)

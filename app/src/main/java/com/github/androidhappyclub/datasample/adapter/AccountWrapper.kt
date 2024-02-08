@@ -27,7 +27,7 @@ package com.github.androidhappyclub.datasample.adapter
 import android.accounts.Account
 import com.ave.vastgui.adapter.widget.AdapterItemWrapper
 import com.github.androidhappyclub.datasample.R
-import com.github.androidhappyclub.datasample.adapter.model.Sms
+import com.github.androidhappyclub.datasample.model.Sms
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com

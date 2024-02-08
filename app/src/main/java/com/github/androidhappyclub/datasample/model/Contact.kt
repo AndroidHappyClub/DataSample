@@ -22,18 +22,16 @@
  * SOFTWARE.
  */
 
-package com.github.androidhappyclub.datasample.adapter
-
-import com.ave.vastgui.adapter.widget.AdapterItemWrapper
-import com.github.androidhappyclub.datasample.R
-import com.github.androidhappyclub.datasample.model.Sms
+package com.github.androidhappyclub.datasample.model
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
-// Date: 2023/12/16
+// Date: 2023/12/17
 
 /**
- * [Sms] 对象包装器，用于 [ContentProviderAdapter] 。
+ * 通讯录联系人信息。
+ *
+ * @property name 显示姓名。
+ * @property number 电话号码。
  */
-class SmsWrapper(sms: Sms) :
-    AdapterItemWrapper<Sms>(sms,null, R.layout.item_sms)
+data class Contact(val name:String?,val number:String?)

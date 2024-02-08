@@ -28,23 +28,44 @@
 
         <variable
             name="item"
-            type="com.github.androidhappyclub.datasample.model.Contact" />
+            type="com.github.androidhappyclub.datasample.model.Student" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <com.google.android.material.textview.MaterialTextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{item.name}" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@{item.id,default=@string/stu_id}"
+            android:textSize="20sp" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{item.number}" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@{item.name,default=@string/stu_name}"
+            android:textSize="20sp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@{item.sex,default=@string/stu_sex}"
+            android:textSize="20sp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@{item.age,default=@string/stu_age}"
+            android:textSize="20sp" />
     </LinearLayout>
 </layout>

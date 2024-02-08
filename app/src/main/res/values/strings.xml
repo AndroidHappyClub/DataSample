@@ -23,14 +23,19 @@
   -->
 
 <resources>
-    <string name="app_name">DataSample</string>
-    <string name="account">帐号</string>
     <string name="Button_Add">添加</string>
-    <string name="read_sms">读取短信</string>
-    <string name="write_sms">插入短信</string>
-    <string name="read_contacts">读取联系人</string>
-    <string name="write_contacts">添加联系人</string>
     <string name="Button_Search">查询</string>
-    <string name="password">密码</string>
+    <string name="account">帐号</string>
+    <string name="app_name">DataSample</string>
     <string name="getAccounts">获取设备账户</string>
+    <string name="password">密码</string>
+    <string name="read_contacts">读取联系人</string>
+    <string name="read_sms">读取短信</string>
+    <string name="stu_age">学生年龄</string>
+    <string name="stu_id">学生id</string>
+    <string name="stu_name">学生姓名</string>
+    <string name="stu_page">学生页面</string>
+    <string name="stu_sex">学生性别</string>
+    <string name="write_contacts">添加联系人</string>
+    <string name="write_sms">插入短信</string>
 </resources>

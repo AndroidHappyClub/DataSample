@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<!--
+﻿<?xml version="1.0" encoding="utf-8"?><!--
   ~ MIT License
   ~
   ~ Copyright (c) 2023 AndroidHappyClub
@@ -54,9 +53,9 @@
 
         <!--注册ContentProvider：全限定类名,用于匹配的URI,是否共享数据 -->
         <provider
-            android:name=".provider.CustomContentProvider"
-            android:authorities="com.github.datasample.customprovider"
-            android:exported="true" />
+            android:name=".provider.StudentProvider"
+            android:authorities="com.github.androidhappyclub.datasample.studentprovider"
+            android:exported="false" />
 
         <activity
             android:name=".FileActivity"
@@ -83,8 +82,9 @@
             <!--            </intent-filter>-->
         </activity>
         <activity
-            android:name=".SqliteActivity"
-            android:exported="true">
+            android:name=".StudentDbActivity"
+            android:exported="true"
+            android:label="@string/stu_page">
             <!--            <intent-filter>-->
             <!--                <action android:name="android.intent.action.MAIN" />-->
             <!--                <category android:name="android.intent.category.LAUNCHER" />-->

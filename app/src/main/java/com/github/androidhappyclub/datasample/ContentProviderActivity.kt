@@ -28,9 +28,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.RawContacts
@@ -42,23 +39,22 @@ import androidx.core.database.getIntOrNull
 import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ave.vastgui.core.extension.SingletonHolder
 import com.ave.vastgui.tools.utils.IntentUtils
 import com.ave.vastgui.tools.utils.permission.requestPermission
 import com.ave.vastgui.tools.viewbinding.viewBinding
-import com.github.androidhappyclub.datasample.accounts.AccountHelper
+import com.github.androidhappyclub.datasample.helper.AccountHelper
 import com.github.androidhappyclub.datasample.adapter.ContentProviderAdapter
-import com.github.androidhappyclub.datasample.adapter.model.Contact
-import com.github.androidhappyclub.datasample.adapter.model.Sms
+import com.github.androidhappyclub.datasample.model.Contact
+import com.github.androidhappyclub.datasample.model.Sms
 import com.github.androidhappyclub.datasample.databinding.ActivityContentProviderBinding
 import com.github.androidhappyclub.datasample.log.mLogFactory
+import com.github.androidhappyclub.datasample.model.Student
 import com.github.androidhappyclub.datasample.observer.SMSObserver
 import com.github.androidhappyclub.datasample.os.SMSHandler
 import com.github.androidhappyclub.datasample.provider.ContactEmail
 import com.github.androidhappyclub.datasample.provider.ContactName
 import com.github.androidhappyclub.datasample.provider.ContactPhone
 import com.github.androidhappyclub.datasample.provider.buildContactsScope
-import java.lang.ref.WeakReference
 
 class ContentProviderActivity : AppCompatActivity(R.layout.activity_content_provider) {
 
@@ -72,6 +68,21 @@ class ContentProviderActivity : AppCompatActivity(R.layout.activity_content_prov
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        contentResolver
+            .query(
+                Student.CONTENT_URI,
+                arrayOf(Student.COLUMN_NAME, Student.COLUMN_SEX),
+                null,
+                null,
+                null
+            )
+            ?.use {
+                while (it.moveToNext()) {
+                    mLogger.d("${it.getStringOrNull(it.getColumnIndex(Student.COLUMN_NAME))}")
+                }
+            }
+
         mBinding.contents.layoutManager = LinearLayoutManager(this)
         // 获取的是哪些列的信息
         mBinding.contents.adapter = mCpAdapter
