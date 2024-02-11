@@ -106,9 +106,7 @@ class StudentDbActivity : AppCompatActivity(R.layout.activity_student_db) {
                     }
                     if (-1L != result) {
                         val count = mStudentDbHelper.getCount()
-                        updateListView(
-                            String.format("%d,%d", if (count - 19 < 0) 0 else count - 19, count)
-                        )
+                        updateListView(getString(R.string.format_sql_limit, 0, count))
                     }
                 }
                 show()
@@ -120,7 +118,7 @@ class StudentDbActivity : AppCompatActivity(R.layout.activity_student_db) {
                 setTitle("新增学生")
                 setView(R.layout.dialog_add_student)
                 setPositiveButton("确定") { _, _ ->
-                    val uri = contentResolver.insert(Student.CONTENT_URI, ContentValues().apply {
+                    val values = ContentValues().apply {
                         put(
                             Student.COLUMN_NAME,
                             findViewById<TextInputEditText>(R.id.stuName).text.toString()
@@ -133,13 +131,11 @@ class StudentDbActivity : AppCompatActivity(R.layout.activity_student_db) {
                             Student.COLUMN_AGE,
                             findViewById<TextInputEditText>(R.id.stuAge).text.toString()
                         )
-                    })
-                    uri?.apply {
+                    }
+                    contentResolver.insert(Student.CONTENT_URI, values)?.apply {
                         contentResolver.notifyChange(this, null)
                         val count = mStudentDbHelper.getCount()
-                        updateListView(
-                            String.format("%d,%d", if (count - 19 < 0) 0 else count - 19, count)
-                        )
+                        updateListView(getString(R.string.format_sql_limit, 0, count))
                     }
                 }
                 show()
@@ -149,7 +145,7 @@ class StudentDbActivity : AppCompatActivity(R.layout.activity_student_db) {
         mBinding.queryStudent.setOnClickListener {
             val count = mStudentDbHelper.getCount()
             mLogger.d("目前数据总数 $count")
-            updateListView(String.format("%d,%d", (count - 19).coerceAtLeast(0), count))
+            updateListView(getString(R.string.format_sql_limit, 0, count))
         }
 
         //查询数据，获取游标

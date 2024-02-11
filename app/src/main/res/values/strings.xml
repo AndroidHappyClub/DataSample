@@ -39,4 +39,5 @@
     <string name="write_contacts">添加联系人</string>
     <string name="write_sms">插入短信</string>
     <string name="add_by_provider">通过内容提供者添加</string>
+    <string name="format_sql_limit">%d,%d</string>
 </resources>
