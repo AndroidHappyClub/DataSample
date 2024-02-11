@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023 AndroidHappyClub
+ * Copyright (c) 2024 AndroidHappyClub
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,8 +42,6 @@ class SMSObserver(
     private val mHandler: Handler,
     private val mContext: Context
 ) : ContentObserver(mHandler) {
-
-    private val mLogger = mLogFactory.getLog(SMSObserver::class.java)
 
     override fun onChange(selfChange: Boolean) {
         super.onChange(selfChange)

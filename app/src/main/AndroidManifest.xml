@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><!--
   ~ MIT License
   ~
-  ~ Copyright (c) 2023 AndroidHappyClub
+  ~ Copyright (c) 2024 AndroidHappyClub
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,30 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 对 ContentProvider 声明的权限，详情参考
+    https://developer.android.com/guide/topics/providers/content-provider-creating#Permissions -->
+    <permission
+        android:name="com.github.androidhappyclub.datasample.studentprovider.PROVIDER"
+        android:protectionLevel="normal" />
+    <permission
+        android:name="com.github.androidhappyclub.datasample.studentprovider.READ"
+        android:protectionLevel="normal" />
+    <permission
+        android:name="com.github.androidhappyclub.datasample.studentprovider.WRITE"
+        android:protectionLevel="normal" />
+    <permission
+        android:name="com.github.androidhappyclub.datasample.studentprovider.STUDENT_READ"
+        android:protectionLevel="normal" />
+    <permission
+        android:name="com.github.androidhappyclub.datasample.studentprovider.STUDENT_WRITE"
+        android:protectionLevel="normal" />
+    <permission
+        android:name="com.github.androidhappyclub.datasample.studentprovider.TEST_READ"
+        android:protectionLevel="normal" />
+    <permission
+        android:name="com.github.androidhappyclub.datasample.studentprovider.TEST_WRITE"
+        android:protectionLevel="normal" />
 
     <uses-feature
         android:name="android.hardware.telephony"
@@ -55,7 +79,10 @@
         <provider
             android:name=".provider.StudentProvider"
             android:authorities="com.github.androidhappyclub.datasample.studentprovider"
-            android:exported="false" />
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:readPermission="com.github.androidhappyclub.datasample.studentprovider.READ"
+            android:writePermission="com.github.androidhappyclub.datasample.studentprovider.WRITE" />
 
         <activity
             android:name=".FileActivity"
@@ -85,10 +112,10 @@
             android:name=".StudentDbActivity"
             android:exported="true"
             android:label="@string/stu_page">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ContentProviderActivity"

@@ -1,7 +1,7 @@
 <!--
   ~ MIT License
   ~
-  ~ Copyright (c) 2023 AndroidHappyClub
+  ~ Copyright (c) 2024 AndroidHappyClub
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
   ~ SOFTWARE.
   -->
 
-<paths xmlns:android="http://schemas.android.com/apk/res/android">
+<paths>
     <cache-path path="." name="get_cache_dir"/>
     <files-path path="." name="get_files_dir"/>
     <!--下载apk-->

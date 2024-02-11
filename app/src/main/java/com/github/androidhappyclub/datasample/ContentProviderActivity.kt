@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023 AndroidHappyClub
+ * Copyright (c) 2024 AndroidHappyClub
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,28 +26,35 @@ package com.github.androidhappyclub.datasample
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.RawContacts
 import android.provider.Telephony
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getLongOrNull
 import androidx.core.database.getStringOrNull
+import androidx.core.graphics.drawable.IconCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ave.vastgui.core.extension.defaultLogTag
+import com.ave.vastgui.tools.utils.AppUtils
 import com.ave.vastgui.tools.utils.IntentUtils
 import com.ave.vastgui.tools.utils.permission.requestPermission
+import com.ave.vastgui.tools.utils.shortcut.addDynamicShortcuts
 import com.ave.vastgui.tools.viewbinding.viewBinding
-import com.github.androidhappyclub.datasample.helper.AccountHelper
 import com.github.androidhappyclub.datasample.adapter.ContentProviderAdapter
+import com.github.androidhappyclub.datasample.databinding.ActivityContentProviderBinding
+import com.github.androidhappyclub.datasample.helper.AccountHelper
+import com.github.androidhappyclub.datasample.log.mLogFactory
 import com.github.androidhappyclub.datasample.model.Contact
 import com.github.androidhappyclub.datasample.model.Sms
-import com.github.androidhappyclub.datasample.databinding.ActivityContentProviderBinding
-import com.github.androidhappyclub.datasample.log.mLogFactory
 import com.github.androidhappyclub.datasample.model.Student
 import com.github.androidhappyclub.datasample.observer.SMSObserver
 import com.github.androidhappyclub.datasample.os.SMSHandler
@@ -68,21 +75,8 @@ class ContentProviderActivity : AppCompatActivity(R.layout.activity_content_prov
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        contentResolver
-            .query(
-                Student.CONTENT_URI,
-                arrayOf(Student.COLUMN_NAME, Student.COLUMN_SEX),
-                null,
-                null,
-                null
-            )
-            ?.use {
-                while (it.moveToNext()) {
-                    mLogger.d("${it.getStringOrNull(it.getColumnIndex(Student.COLUMN_NAME))}")
-                }
-            }
-
+        // 添加动态快捷方式
+        addDynamicShortcuts()
         mBinding.contents.layoutManager = LinearLayoutManager(this)
         // 获取的是哪些列的信息
         mBinding.contents.adapter = mCpAdapter
@@ -238,6 +232,21 @@ class ContentProviderActivity : AppCompatActivity(R.layout.activity_content_prov
         }
         cursor.close()
         return name
+    }
+
+    private fun addDynamicShortcuts() {
+        val shortcut =
+            ShortcutInfoCompat.Builder(this, "${AppUtils.getPackageName()}.StudentDbActivity")
+                .setShortLabel("StudentDbActivity")
+                .setLongLabel("学生管理页面")
+                .setIcon(
+                    IconCompat.createWithResource(this, R.drawable.ic_launcher_foreground)
+                )
+                .setIntent(Intent(this, StudentDbActivity::class.java).apply {
+                    action = Intent.ACTION_VIEW
+                })
+                .build()
+        addDynamicShortcuts(listOf(shortcut))
     }
 
     companion object {

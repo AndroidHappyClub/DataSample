@@ -1,7 +1,7 @@
 <!--
   ~ MIT License
   ~
-  ~ Copyright (c) 2023 AndroidHappyClub
+  ~ Copyright (c) 2024 AndroidHappyClub
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,8 @@
   -->
 
 <resources>
-    <string name="Button_Add">添加</string>
-    <string name="Button_Search">查询</string>
+    <string name="add">添加</string>
+    <string name="query">查询</string>
     <string name="account">帐号</string>
     <string name="app_name">DataSample</string>
     <string name="getAccounts">获取设备账户</string>
@@ -38,4 +38,5 @@
     <string name="stu_sex">学生性别</string>
     <string name="write_contacts">添加联系人</string>
     <string name="write_sms">插入短信</string>
+    <string name="add_by_provider">通过内容提供者添加</string>
 </resources>

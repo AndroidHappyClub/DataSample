@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023 AndroidHappyClub
+ * Copyright (c) 2024 AndroidHappyClub
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 
 package com.github.androidhappyclub.datasample
 
+import android.content.ContentValues
 import android.database.Cursor
 import android.os.Bundle
 import android.provider.BaseColumns
@@ -57,6 +58,11 @@ class StudentDbActivity : AppCompatActivity(R.layout.activity_student_db) {
         bindViews()
     }
 
+    override fun onDestroy() {
+        mStudentDbHelper.close()
+        super.onDestroy()
+    }
+
     private fun bindViews() {
         mStudentDbHelper = StudentDbHelper(this)
 
@@ -79,7 +85,7 @@ class StudentDbActivity : AppCompatActivity(R.layout.activity_student_db) {
             layoutManager = LinearLayoutManager(this@StudentDbActivity)
         }
 
-        mBinding.btnAdd.setOnClickListener {
+        mBinding.addStudent.setOnClickListener {
             mDialogBuilder.apply {
                 setTitle("新增学生")
                 setView(R.layout.dialog_add_student)
@@ -109,7 +115,38 @@ class StudentDbActivity : AppCompatActivity(R.layout.activity_student_db) {
             }
         }
 
-        mBinding.btnSearch.setOnClickListener {
+        mBinding.addStudentByProvider.setOnClickListener {
+            mDialogBuilder.apply {
+                setTitle("新增学生")
+                setView(R.layout.dialog_add_student)
+                setPositiveButton("确定") { _, _ ->
+                    val uri = contentResolver.insert(Student.CONTENT_URI, ContentValues().apply {
+                        put(
+                            Student.COLUMN_NAME,
+                            findViewById<TextInputEditText>(R.id.stuName).text.toString()
+                        )
+                        put(
+                            Student.COLUMN_SEX,
+                            findViewById<TextInputEditText>(R.id.stuSex).text.toString()
+                        )
+                        put(
+                            Student.COLUMN_AGE,
+                            findViewById<TextInputEditText>(R.id.stuAge).text.toString()
+                        )
+                    })
+                    uri?.apply {
+                        contentResolver.notifyChange(this, null)
+                        val count = mStudentDbHelper.getCount()
+                        updateListView(
+                            String.format("%d,%d", if (count - 19 < 0) 0 else count - 19, count)
+                        )
+                    }
+                }
+                show()
+            }
+        }
+
+        mBinding.queryStudent.setOnClickListener {
             val count = mStudentDbHelper.getCount()
             mLogger.d("目前数据总数 $count")
             updateListView(String.format("%d,%d", (count - 19).coerceAtLeast(0), count))

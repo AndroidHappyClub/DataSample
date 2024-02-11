@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023 AndroidHappyClub
+ * Copyright (c) 2024 AndroidHappyClub
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,18 +54,56 @@ class StudentProvider : ContentProvider() {
         return true
     }
 
+    /**
+     * 根据 [uri] 和其他条件查询学生。
+     *
+     * @throws IllegalArgumentException 如果 [uri] 不是指向学生表或者学生的，
+     * 则会抛出该异常。
+     */
+    @Throws(IllegalArgumentException::class)
     override fun query(
         uri: Uri, projection: Array<String>?, selection: String?,
         selectionArgs: Array<String>?, sortOrder: String?
     ): Cursor? {
-        if (STUDENT_TABLE != mUriMatcher.match(uri)) return null
-        return mStudentDbHelper.readableDatabase
-            .query(Student.TABLE_NAME, projection, selection, selectionArgs, "", "", sortOrder)
+        return when (mUriMatcher.match(uri)) {
+            STUDENT_TABLE -> mStudentDbHelper.readableDatabase
+                .query(
+                    Student.TABLE_NAME,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    sortOrder
+                )
+
+            STUDENT -> mStudentDbHelper.readableDatabase
+                .query(
+                    Student.TABLE_NAME,
+                    projection,
+                    "${Student.COLUMN_ID} == ?",
+                    arrayOf(ContentUris.parseId(uri).toString()),
+                    null,
+                    null,
+                    null
+                )
+
+            else -> throw IllegalArgumentException("Please check if $uri is correct.")
+        }
     }
 
+    /**
+     * 根据 [uri] 将 [values] 内的值作为新行插入学生数据库。
+     *
+     * @param values 目前支持的字段有 [Student.COLUMN_NAME] ，[Student.COLUMN_SEX]
+     * 和 [Student.COLUMN_AGE] 。
+     * @return 如果插入失败则返回 null 。
+     * @throws IllegalArgumentException 如果 [uri] 不是指向学生表的，
+     * 则会抛出该异常。
+     */
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        if (STUDENT_TABLE != mUriMatcher.match(uri) || null == values) {
-            return null
+        if (STUDENT_TABLE != mUriMatcher.match(uri)) {
+            throw IllegalArgumentException("Please check if $uri is correct.")
         }
         val index = mStudentDbHelper.insert(values)
         return if (-1L == index) {
@@ -77,6 +115,9 @@ class StudentProvider : ContentProvider() {
         }
     }
 
+    /**
+     * 根据 [uri] 和判断条件删除指定的学生。
+     */
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
         return when (mUriMatcher.match(uri)) {
             STUDENT -> mStudentDbHelper.delete(ContentUris.parseId(uri))
@@ -87,6 +128,9 @@ class StudentProvider : ContentProvider() {
         }
     }
 
+    /**
+     * 根据 [uri] 将 [values] 内的值更新到指定的学生。
+     */
     override fun update(
         uri: Uri, values: ContentValues?, selection: String?,
         selectionArgs: Array<String>?
@@ -97,12 +141,12 @@ class StudentProvider : ContentProvider() {
                 .writableDatabase.update(
                     Student.TABLE_NAME,
                     values,
-                    "id=?",
+                    "${Student.COLUMN_ID}=?",
                     arrayOf(ContentUris.parseId(uri).toString())
                 )
 
             STUDENT_TABLE -> mStudentDbHelper
-                .writableDatabase.delete(Student.TABLE_NAME, selection, selectionArgs)
+                .writableDatabase.update(Student.TABLE_NAME, values, selection, selectionArgs)
 
             else -> 0
         }

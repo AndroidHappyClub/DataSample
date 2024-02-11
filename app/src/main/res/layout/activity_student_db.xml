@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ MIT License
   ~
-  ~ Copyright (c) 2023 AndroidHappyClub
+  ~ Copyright (c) 2024 AndroidHappyClub
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -42,17 +42,25 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAdd"
+            android:id="@+id/addStudent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="@string/Button_Add" />
+            android:text="@string/add" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSearch"
+            android:id="@+id/addStudentByProvider"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="@string/Button_Search" />
+            android:text="@string/add_by_provider" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/queryStudent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/query" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

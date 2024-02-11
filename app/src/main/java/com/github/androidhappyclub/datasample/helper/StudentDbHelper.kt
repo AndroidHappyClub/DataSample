@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023 AndroidHappyClub
+ * Copyright (c) 2024 AndroidHappyClub
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,11 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory
 import android.database.sqlite.SQLiteOpenHelper
 import android.net.Uri
 import androidx.core.database.getLongOrNull
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import com.ave.vastgui.core.extension.nothing_to_do
+import com.github.androidhappyclub.datasample.log.mLogFactory
 import com.github.androidhappyclub.datasample.model.Student
 
 /**
@@ -43,6 +48,7 @@ class StudentDbHelper(
     mFactory: CursorFactory? = null,
     mVersion: Int = VERSION
 ) : SQLiteOpenHelper(mContext, mDataName, mFactory, mVersion) {
+    private val mLogger = mLogFactory.getLog(StudentDbHelper::class.java)
     private lateinit var mSd: SQLiteDatabase
 
     // 数据库第一次创建时被调用
@@ -74,7 +80,7 @@ class StudentDbHelper(
      *
      * @return 新插入行的行 ID，如果发生错误则为 -1 。
      */
-    fun insert(values: ContentValues): Long = writableDatabase.use {
+    fun insert(values: ContentValues?): Long = writableDatabase.use {
         it.insert(Student.TABLE_NAME, null, values)
     }
 
@@ -82,7 +88,12 @@ class StudentDbHelper(
      * 更新 [id] 对应学生的数据。
      */
     inline fun update(id: Long, values: ContentValues.() -> Unit): Int = writableDatabase.use {
-        it.update(Student.TABLE_NAME, ContentValues().also(values), "${Student.COLUMN_ID} = ?", arrayOf("$id"))
+        it.update(
+            Student.TABLE_NAME,
+            ContentValues().also(values),
+            "${Student.COLUMN_ID} = ?",
+            arrayOf("$id")
+        )
     }
 
     /**
@@ -111,7 +122,7 @@ class StudentDbHelper(
      * @return 如果传入 whereClause ，则影响的行数，否则为 0 。
      */
     fun delete(id: Long): Int = writableDatabase.use {
-        it.delete(Student.TABLE_NAME, "id=?", arrayOf(id.toString()))
+        it.delete(Student.TABLE_NAME, "${Student.COLUMN_ID} = ?", arrayOf(id.toString()))
     }
 
     /**
@@ -143,9 +154,8 @@ class StudentDbHelper(
     /**
      * 软件版本号发生改变时调用
      */
-    override fun onUpgrade(sd: SQLiteDatabase, i: Int, i1: Int) {
-        mSd = sd
-        mSd.execSQL("ALTER TABLE student ADD age INTEGER")
+    override fun onUpgrade(sd: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        nothing_to_do()
     }
 
     fun deleteDb(tableName: String) {
